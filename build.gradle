@@ -34,6 +34,9 @@ dependencies {
     // json
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 
+    // javatuples (Pair)
+    implementation 'org.javatuples:javatuples:1.2'
+
     // test
     testImplementation 'org.testcontainers:testcontainers:1.17.6'
     testImplementation "org.testcontainers:junit-jupiter:1.17.6"

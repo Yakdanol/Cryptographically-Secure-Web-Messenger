@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class BinaryOperations {
 
-    // todo разобраться с размером XOR между двумя массивами байт (одинаковый всегда или нет?)
+    // разобраться с размером XOR между двумя массивами байт (одинаковый всегда или нет?)
     public static byte[] xor(byte[] first, byte[] second) {
         // универсальный, для любой длины
         int maxLength = Math.max(first.length, second.length);
@@ -28,27 +28,39 @@ public class BinaryOperations {
         return result;
     }
 
-    public static byte[] leftCycleShift(byte[] input, int shift) {
+    public static byte[] leftCycleShift(byte[] input, long shift) {
         byte[] result;
         long value = bytesToLong(input);
-        int effectiveShift = shift % 64;
+        long effectiveShift = shift % 64;
         value = (value << effectiveShift) | (value >>> (64 - effectiveShift)); // >> или >>> ?
         result = longToBytes(value);
 
         return result;
     }
 
-    public static byte[] rightCycleShift(byte[] input, int shift) {
+    public static byte[] rightCycleShift(byte[] input, long shift) {
         byte[] result = new byte[input.length];
         long value = bytesToLong(input);
-        int effectiveShift = shift % 64;
+        long effectiveShift = shift % 64;
         value = (value >>> effectiveShift) | (value << (64 - effectiveShift)); // >> или >>> ?
         result = longToBytes(value);
 
         return result;
     }
 
-    // для 8 байт
+    public static long leftCycleShift(long number, int numBits, long k) {
+        long valueShift = Math.abs(k % numBits);
+        return (number << valueShift) | ((number & (((1L << valueShift) - 1) << (numBits - valueShift))) >>> (numBits - valueShift));
+    }
+
+    public static long rightCycleShift(long number, int numBits, long k) {
+        long valueShift = Math.abs(k % numBits);
+        return (number >>> valueShift) | ((number & ((1L << valueShift) - 1)) << (numBits - valueShift));
+    }
+
+
+
+    // для 8 байт, long
     public static long bytesToLong(byte[] input) {
         long result = 0;
         for (byte b : input) {
@@ -58,7 +70,7 @@ public class BinaryOperations {
         return result;
     }
 
-    // для 8 байт
+    // для 8 байт, long
     public static byte[] longToBytes(long input) {
         byte[] result = new byte[8];
 
@@ -114,5 +126,64 @@ public class BinaryOperations {
         }
         return result.toString();
     }
+
+
+
+    public static long getBits(byte[] bytes, int from, int countBits) {
+        byte[] result = new byte[(countBits + Byte.SIZE - 1) / Byte.SIZE];
+
+        for (int i = 0; i < countBits; i++) {
+            if (from + i >= bytes.length * Byte.SIZE) {
+                setBitFromEnd(result, i / countBits, false);
+            } else {
+                setBitFromEnd(result, i, getBitFromEnd(bytes, from + i) == 1);
+            }
+        }
+
+        return bytesToLong(result);
+    }
+
+    public static long getBits(long block, int from, int countBits) {
+        return (block << (Long.SIZE - from - 1) >>> (Long.SIZE - countBits));
+    }
+
+    public static int getBitFromEnd(byte[] bytes, int indexBit) {
+        return (bytes[indexBit / Byte.SIZE] >> (Byte.SIZE - indexBit % Byte.SIZE - 1)) & 1;
+    }
+
+    public static void setBitFromEnd(byte[] bytes, int indexBit, boolean valueBit) {
+        if (valueBit) {
+            bytes[indexBit / Byte.SIZE] |= (byte) (1 << (Byte.SIZE - indexBit % Byte.SIZE - 1));
+        } else {
+            bytes[indexBit / Byte.SIZE] &= (byte) ~(1 << (Byte.SIZE - indexBit % Byte.SIZE - 1));
+        }
+    }
+
+    // битовое сложение по модулю
+    public static long sumModule(long first, long second, int numBits) {
+        long result = 0;
+        long reminder = 0;
+
+        for (int i = 0; i < numBits; i++) {
+            long tempSum = ((first >> i) & 1) ^ ((second >> i) & 1) ^ reminder;
+            reminder = (((first >> i) & 1) + ((second >> i) & 1) + reminder) >> 1;
+            result |= tempSum << i;
+        }
+
+        return result;
+    }
+
+    // битовое вычитание по модулю
+    public static long subtractModule(long first, long second, int numBits) {
+        return sumModule(first, ~second + 1, numBits);
+    }
+
+//    public static void main(String[] args) {
+//        long a = 123456789123L;
+//        long b = 987654321987L;
+//        int module = 32;
+//
+////        System.out.println("My = " + sumModule(a, b, module));
+//    }
 
 }
