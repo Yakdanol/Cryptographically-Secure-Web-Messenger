@@ -20,4 +20,6 @@ public class TestEncryption {
         System.out.println("Result decryption: " + Arrays.toString(resultDecrypt));
         System.out.println("Original array: " + Arrays.toString(inputBlock));
     }
+
+
 }

@@ -11,8 +11,7 @@ public class RC5 implements CipherAlgorithms {
     private final long[] roundKeys;
     private final RC5service service;
 
-
-        public RC5(int inputBlockSizeInBits, int countRounds, int lenKeyInBits, byte[] key) {
+    public RC5(int inputBlockSizeInBits, int countRounds, int lenKeyInBits, byte[] key) {
         if (!(inputBlockSizeInBits == 32 || inputBlockSizeInBits == 64 ||inputBlockSizeInBits == 128)) {
             throw new IllegalArgumentException("Error size block in bits!");
         }
