@@ -117,7 +117,6 @@ public class SerpentService {
         return K;
     }
 
-
     public byte replaceFromSBox(byte b, int i) {
         return S_BOX_TABLE[i][b];
     }

@@ -23,6 +23,10 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.26'
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
 
+    // apache-commons
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+    implementation 'commons-io:commons-io:2.16.1'
+
     // configuration
     implementation 'com.typesafe:config:1.4.2'
 
