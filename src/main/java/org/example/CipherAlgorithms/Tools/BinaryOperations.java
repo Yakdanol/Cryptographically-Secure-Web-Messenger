@@ -3,6 +3,9 @@ package org.example.CipherAlgorithms.Tools;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 @Slf4j
 public class BinaryOperations {
 
@@ -58,6 +61,15 @@ public class BinaryOperations {
         return (number >>> valueShift) | ((number & ((1L << valueShift) - 1)) << (numBits - valueShift));
     }
 
+    public static int leftCycleShift(int number, int numBits, int k) {
+        int valueShift = Math.abs(k % numBits);
+        return (number << valueShift) | ((number & (((1 << valueShift) - 1) << (numBits - valueShift))) >>> (numBits - valueShift));
+    }
+
+    public static int rightCycleShift(int number, int numBits, int k) {
+        int valueShift = Math.abs(k % numBits);
+        return (number >>> valueShift) | ((number & ((1 << valueShift) - 1)) << (numBits - valueShift));
+    }
 
 
     // для 8 байт, long
@@ -81,6 +93,26 @@ public class BinaryOperations {
 
         return result;
     }
+
+    // todo протестировать
+    public static byte[] intToByteArray(int[] array) {
+        byte[] result = new byte[array.length * 4 ];
+
+        ByteBuffer buffer = ByteBuffer.wrap(result).order(ByteOrder.BIG_ENDIAN);
+        for (int value : array) {
+            buffer.putInt(value);
+        }
+
+//        for (int i = 0; i < 4; i++) {
+//            result[i * 4] = (byte) (array[i] >>> 24);
+//            result[i * 4 + 1] = (byte) (array[i] >>> 16);
+//            result[i * 4 + 2] = (byte) (array[i] >>> 8);
+//            result[i * 4 + 3] = (byte) (array[i]);
+//        }
+
+        return result;
+    }
+
 
     public static byte[] getLeftNbits(byte[] input, int n) {
         int len = n / 8 + (n % 8 == 0 ? 0 : 1);

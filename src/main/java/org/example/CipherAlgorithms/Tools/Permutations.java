@@ -13,7 +13,7 @@ public class Permutations {
     }
 
     public static byte[] permutate(byte[] array, byte[] Pblock, RuleIndex rule) {
-        // TODO пока так, потом надо реализовать паддинг
+        // пока так, потом надо реализовать паддинг
         int resultSize = Pblock.length / 8 + (Pblock.length % 8 == 0 ? 0 : 1);
         byte[] result = new byte[resultSize]; // (Pblock.length + 7) / 8;
 

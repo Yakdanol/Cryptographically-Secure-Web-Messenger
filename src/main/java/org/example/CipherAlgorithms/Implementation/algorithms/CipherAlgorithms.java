@@ -1,7 +1,7 @@
 package org.example.CipherAlgorithms.Implementation.algorithms;
 
 public interface CipherAlgorithms {
-    public int getBlockSize();
+    int getBlockSize();
 
     byte[] encryptBlock(byte[] inputBlock);
 
