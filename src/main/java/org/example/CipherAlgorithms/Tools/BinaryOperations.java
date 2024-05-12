@@ -94,7 +94,7 @@ public class BinaryOperations {
         return result;
     }
 
-    // todo протестировать
+// на всякий случай проверить потом
     public static byte[] intToByteArray(int[] array) {
         byte[] result = new byte[array.length * 4 ];
 
@@ -102,13 +102,6 @@ public class BinaryOperations {
         for (int value : array) {
             buffer.putInt(value);
         }
-
-//        for (int i = 0; i < 4; i++) {
-//            result[i * 4] = (byte) (array[i] >>> 24);
-//            result[i * 4 + 1] = (byte) (array[i] >>> 16);
-//            result[i * 4 + 2] = (byte) (array[i] >>> 8);
-//            result[i * 4 + 3] = (byte) (array[i]);
-//        }
 
         return result;
     }

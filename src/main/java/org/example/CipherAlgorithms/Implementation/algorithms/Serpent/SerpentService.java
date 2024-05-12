@@ -82,8 +82,6 @@ public class SerpentService {
         for (int i = 8; i < 132; i++) {
             w[i] = BinaryOperations.leftCycleShift((w[i - 8] ^ w[i - 5] ^ w[i - 3] ^ w[i - 1] ^ goldenRatio ^ (i - 8)),
                     Integer.SIZE, 11);
-            // int temp = w[i - 8] ^ w[i - 5] ^ w[i - 3] ^ w[i - 1] ^ goldenRatio ^ (i - 8);
-            //w[i] = (temp << 11) | (temp >>> 21);
         }
 
         return w;
@@ -98,8 +96,6 @@ public class SerpentService {
             for (int k = 4 * i; k < 4 * i + 4; k++) {
                 var key_left = Permutations.permutate(new byte[] {(byte) (w[k] >>> 24 & 0xff), (byte) (w[k] >>> 16 & 0x00ff)}, S_BOX_TABLE[j], Permutations.RuleIndex.LeftZero);
                 var key_right = Permutations.permutate(new byte[] {(byte) (w[k] >>> 8 & 0x0000ff), (byte) (w[k] & 0x000000ff)}, S_BOX_TABLE[j], Permutations.RuleIndex.LeftZero);
-//                var key_left = permutationBits(new byte[] {(byte) (w[k] >>> 24 & 0xff), (byte) (w[k] >>> 16 & 0x00ff)}, S_BOX_TABLE[j]);
-//                var key_right = permutationBits(new byte[] {(byte) (w[k] >>> 8 & 0x0000ff), (byte) (w[k] & 0x000000ff)}, S_BOX_TABLE[j]);
                 keys[k][0] = (key_left[0]);
                 keys[k][1] = (key_left[1]);
                 keys[k][2] = (key_right[0]);
@@ -152,11 +148,6 @@ public class SerpentService {
         x[2] = x[2] << 22 | x[2] >>> 10;
 
         input = BinaryOperations.intToByteArray(x);
-
-//        ByteBuffer buffer = ByteBuffer.allocate(16);
-//        IntBuffer intBuf = IntBuffer.wrap(x);
-//        buffer.asIntBuffer().put(intBuf);
-//        System.arraycopy(buffer.array(), 0, input, 0, 16);
     }
 
     public void inverseLinearTransform(byte[] input) {
@@ -178,12 +169,5 @@ public class SerpentService {
         x[0] = x[0] >>> 13 | x[0] << 19;
 
         input = BinaryOperations.intToByteArray(x);
-
-//        ByteBuffer buffer = ByteBuffer.allocate(16);
-//        IntBuffer intBuf = IntBuffer.wrap(x);
-//        buffer.asIntBuffer().put(intBuf);
-//        System.arraycopy(buffer.array(), 0, input, 0, 16);
     }
-
 }
-

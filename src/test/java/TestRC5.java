@@ -5,6 +5,13 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestRC5 {
+
+    /**
+     * Тест:
+     * ключ длиной 32 бита
+     * блок длиной 32 бита
+     * количество раундов - 10
+     */
     @Test
     void test_1_inputBlock_32_bits() {
         int inputBlockSizeInBits = 32;
@@ -24,8 +31,14 @@ public class TestRC5 {
         assertArrayEquals(inputBlock, resultDecrypt);
     }
 
+    /**
+     * Тест:
+     * ключ длиной 32 бита
+     * блок длиной 64 бита
+     * количество раундов - 10
+     */
     @Test
-    void test_1_inputBlock_64_bits() {
+    void test_2_inputBlock_64_bits() {
         int inputBlockSizeInBits = 64;
         int countRounds = 10;
         int lenKeyInBits = 32;
@@ -43,8 +56,14 @@ public class TestRC5 {
         assertArrayEquals(inputBlock, resultDecrypt);
     }
 
+    /**
+     * Тест:
+     * ключ длиной 32 бита
+     * блок длиной 128 бит
+     * количество раундов - 10
+     */
     @Test
-    void test_1_inputBlock_128_bits_key32() {
+    void test_3_inputBlock_128_bits_key32() {
         int inputBlockSizeInBits = 128;
         int countRounds = 10;
         int lenKeyInBits = 32;
@@ -63,8 +82,14 @@ public class TestRC5 {
         assertArrayEquals(inputBlock, resultDecrypt);
     }
 
+    /**
+     * Тест:
+     * ключ длиной 64 бита
+     * блок длиной 128 бит
+     * количество раундов - 10
+     */
     @Test
-    void test_2_inputBlock_128_bits_key64() {
+    void test_4_inputBlock_128_bits_key64() {
         int inputBlockSizeInBits = 128;
         int countRounds = 10;
         int lenKeyInBits = 64;
@@ -83,8 +108,14 @@ public class TestRC5 {
         assertArrayEquals(inputBlock, resultDecrypt);
     }
 
+    /**
+     * Тест:
+     * ключ длиной 48 бит
+     * блок длиной 128 бит
+     * количество раундов - 10
+     */
     @Test
-    void test_2_inputBlock_128_bits_key48() {
+    void test_5_inputBlock_128_bits_key48() {
         int inputBlockSizeInBits = 128;
         int countRounds = 10;
         int lenKeyInBits = 48;
@@ -103,8 +134,14 @@ public class TestRC5 {
         assertArrayEquals(inputBlock, resultDecrypt);
     }
 
+    /**
+     * Тест:
+     * ключ длиной 40 бит
+     * блок длиной 128 бит
+     * количество раундов - 100
+     */
     @Test
-    void test_2_inputBlock_128_bits_key40_rounds100() {
+    void test_6_inputBlock_128_bits_key40_rounds100() {
         int inputBlockSizeInBits = 128;
         int countRounds = 100;
         int lenKeyInBits = 40;
@@ -122,6 +159,5 @@ public class TestRC5 {
 
         assertArrayEquals(inputBlock, resultDecrypt);
     }
-
 
 }

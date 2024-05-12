@@ -48,7 +48,7 @@ public class TestSerpent {
     }
 
     /**
-     * Тест: ключ длиной 256 бит
+     * Тест: ключ длиной 128 бит
      */
     @Test
     void test_3_key_256_bits() {
