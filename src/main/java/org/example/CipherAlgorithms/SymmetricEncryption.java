@@ -1,6 +1,6 @@
 package org.example.CipherAlgorithms;
 
-import org.example.CipherAlgorithms.Implementation.algorithms.RC5.RC5;
+import org.example.CipherAlgorithms.Implementation.algorithms.CipherAlgorithms;
 import org.example.CipherAlgorithms.Implementation.encryption_mode.EncryptionMode;
 import org.example.CipherAlgorithms.Implementation.encryption_mode.impl.CBC.CBC;
 import org.example.CipherAlgorithms.Implementation.encryption_mode.impl.CFB.CFB;
@@ -17,9 +17,9 @@ import org.example.CipherAlgorithms.Implementation.padding.impl.PKCS7;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
 
 public class SymmetricEncryption {
+
     public enum EncryptionModes {
         ECB,
         CBC,
@@ -44,17 +44,18 @@ public class SymmetricEncryption {
 
     private EncryptionMode encryptionMode;
     private final Padding padding;
+    private final CipherAlgorithms cipherAlgorithm;
     private byte[] initializationVector_IV;
 
-    public SymmetricEncryption(EncryptionModes encryptionMode, PaddingMode paddingMode, byte[] initializationVector_IV) {
+    public SymmetricEncryption(EncryptionModes encryptionMode, PaddingMode paddingMode, CipherAlgorithms cipherAlgorithm, byte[] initializationVector_IV) {
         this.encryptionMode = switch (encryptionMode) {
-            case ECB -> new ECB();
-            case CBC -> new CBC();
-            case PCBC -> new PCBC();
-            case CFB -> new CFB();
-            case OFB -> new OFB();
-            case CTR -> new CTR();
-            case RANDOM_DELTA -> new RandomDelta();
+            case ECB -> new ECB(cipherAlgorithm);
+            case CBC -> new CBC(cipherAlgorithm, initializationVector_IV);
+            case PCBC -> new PCBC(cipherAlgorithm, initializationVector_IV);
+            case CFB -> new CFB(cipherAlgorithm, initializationVector_IV);
+            case OFB -> new OFB(cipherAlgorithm, initializationVector_IV);
+            case CTR -> new CTR(cipherAlgorithm, initializationVector_IV);
+            case RANDOM_DELTA -> new RandomDelta(cipherAlgorithm, initializationVector_IV);
         };
 
         this.padding = switch(paddingMode) {
@@ -64,6 +65,7 @@ public class SymmetricEncryption {
             case ISO_10126 -> new ISO_10126();
         };
 
+        this.cipherAlgorithm = cipherAlgorithm;
         this.initializationVector_IV = initializationVector_IV;
     }
 

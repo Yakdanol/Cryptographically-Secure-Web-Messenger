@@ -103,7 +103,7 @@ public class TestRC5 {
 
         byte[] resultDecrypt = rc5.decryptBlock(result);
         System.out.println("Result decryption: " + Arrays.toString(resultDecrypt));
-        System.out.println("Original array: " + Arrays.toString(inputBlock));
+        System.out.println("Original array: " + Arrays.toString(inputBlock) + "\n");
 
         assertArrayEquals(inputBlock, resultDecrypt);
     }
@@ -129,7 +129,7 @@ public class TestRC5 {
 
         byte[] resultDecrypt = rc5.decryptBlock(result);
         System.out.println("Result decryption: " + Arrays.toString(resultDecrypt));
-        System.out.println("Original array: " + Arrays.toString(inputBlock));
+        System.out.println("Original array: " + Arrays.toString(inputBlock) + "\n");
 
         assertArrayEquals(inputBlock, resultDecrypt);
     }
@@ -155,7 +155,7 @@ public class TestRC5 {
 
         byte[] resultDecrypt = rc5.decryptBlock(result);
         System.out.println("Result decryption: " + Arrays.toString(resultDecrypt));
-        System.out.println("Original array: " + Arrays.toString(inputBlock));
+        System.out.println("Original array: " + Arrays.toString(inputBlock) + "\n");
 
         assertArrayEquals(inputBlock, resultDecrypt);
     }

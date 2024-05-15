@@ -9,26 +9,34 @@ import java.nio.ByteOrder;
 @Slf4j
 public class BinaryOperations {
 
-    // разобраться с размером XOR между двумя массивами байт (одинаковый всегда или нет?)
     public static byte[] xor(byte[] first, byte[] second) {
-        // универсальный, для любой длины
-        int maxLength = Math.max(first.length, second.length);
-        byte[] result = new byte[maxLength];
+        if (first.length == second.length) {
+            // Если длины массивов одинаковы, просто выполняем XOR по всей длине
+            byte[] result = new byte[first.length];
+            for (int i = 0; i < first.length; i++) {
+                result[i] = (byte) (first[i] ^ second[i]);
+            }
+            return result;
+        } else {
+            // Если длины массивов различны, используем более сложную обработку
+            int minLength = Math.min(first.length, second.length);
+            int maxLength = Math.max(first.length, second.length);
+            byte[] result = new byte[maxLength];
 
-        for (int i = 0; i < maxLength; i++) {
-            byte firstByte = i < first.length ? first[i] : 0;
-            byte secondByte = i < second.length ? second[i] : 0;
-            result[i] = (byte) (firstByte ^ secondByte);
+            // XOR для общих байтов
+            for (int i = 0; i < minLength; i++) {
+                result[i] = (byte) (first[i] ^ second[i]);
+            }
+
+            // Копируем оставшиеся байты из более длинного массива
+            if (first.length > second.length) {
+                System.arraycopy(first, minLength, result, minLength, first.length - minLength);
+            } else {
+                System.arraycopy(second, minLength, result, minLength, second.length - minLength);
+            }
+
+            return result;
         }
-
-        // для одинаковой длины
-//        byte[] result = new byte[first.length];
-//
-//        for (int i = 0; i < result.length; i++) {
-//            result[i] = (byte) (first[i] ^ second[i]);
-//        }
-
-        return result;
     }
 
     public static byte[] leftCycleShift(byte[] input, long shift) {
