@@ -25,7 +25,7 @@ public class Serpent implements CipherAlgorithms {
 
     @Override
     public int getBlockSize() {
-        return 128;
+        return 16; // 128 бит, 16 байт
     }
 
     @Override

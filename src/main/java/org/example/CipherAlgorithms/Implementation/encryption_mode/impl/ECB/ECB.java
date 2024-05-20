@@ -13,9 +13,9 @@ public class ECB implements EncryptionMode, AutoCloseable {
     private final ExecutorService executorService;
     private final ThreadLocal<byte[]> threadLocalBuffer;
 
-    public ECB(CipherAlgorithms cipherAlgorithm) {
+    public ECB(CipherAlgorithms cipherAlgorithm, ExecutorService executorService) {
         this.cipherAlgorithm = cipherAlgorithm;
-        this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() - 1);
+        this.executorService = executorService;
         this.threadLocalBuffer = ThreadLocal.withInitial(() -> new byte[cipherAlgorithm.getBlockSize()]);
     }
 

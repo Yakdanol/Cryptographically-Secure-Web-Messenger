@@ -15,10 +15,10 @@ public class PCBC implements EncryptionMode, AutoCloseable {
     private final ExecutorService executorService;
     private final ThreadLocal<byte[]> threadLocalBuffer;
 
-    public PCBC(CipherAlgorithms cipherAlgorithm, byte[] initializationVector_IV) {
+    public PCBC(CipherAlgorithms cipherAlgorithm, byte[] initializationVector_IV, ExecutorService executorService) {
         this.cipherAlgorithm = cipherAlgorithm;
         this.IV = initializationVector_IV;
-        this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() - 1);
+        this.executorService = executorService;
         this.threadLocalBuffer = ThreadLocal.withInitial(() -> new byte[cipherAlgorithm.getBlockSize()]);
     }
 

@@ -18,10 +18,10 @@ public class RandomDelta implements EncryptionMode, AutoCloseable {
     private final ThreadLocal<byte[]> threadLocalBuffer;
     private final BigInteger delta;
 
-    public RandomDelta(CipherAlgorithms cipherAlgorithm, byte[] initializationVector_IV) {
+    public RandomDelta(CipherAlgorithms cipherAlgorithm, byte[] initializationVector_IV, ExecutorService executorService) {
         this.cipherAlgorithm = cipherAlgorithm;
         this.IV = initializationVector_IV;
-        this.executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() - 1);
+        this.executorService = executorService;
         this.threadLocalBuffer = ThreadLocal.withInitial(() -> new byte[cipherAlgorithm.getBlockSize()]);
         delta = new BigInteger(Arrays.copyOf(IV, cipherAlgorithm.getBlockSize() / 2));
     }

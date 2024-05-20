@@ -36,29 +36,28 @@ public abstract class Padding {
         }
 
         byte[] textWithoutPadding = new byte[inputText.length - countBytesPadding];
-
         System.arraycopy(inputText, 0, textWithoutPadding, 0, inputText.length - countBytesPadding);
 
         return textWithoutPadding;
     }
 
     public String addPadding(String pathToFile, int requiredBlockSizeInBytes) throws IOException {
-        String pathToAddPaddingFile = addPostfixToFileName(pathToFile, "_add_padding");
+        String fileWithPadding = addPostfixToFileName(pathToFile, "_add_padding");
 
         try {
-            FileUtils.copyFile(new File(pathToFile), new File(pathToAddPaddingFile));
+            FileUtils.copyFile(new File(pathToFile), new File(fileWithPadding));
         } catch (IOException ex) {
             throw new IOException("Error while copying files!");
         }
 
         try (RandomAccessFile inputFile = new RandomAccessFile(pathToFile, "r");
-             RandomAccessFile paddingFile = new RandomAccessFile(pathToAddPaddingFile, "rw")) {
+             RandomAccessFile paddingFile = new RandomAccessFile(fileWithPadding, "rw")) {
             paddingFile.seek(inputFile.length());
             byte[] padding = getArrayPadding((byte) (requiredBlockSizeInBytes - inputFile.length() % requiredBlockSizeInBytes));
             paddingFile.write(padding);
         }
 
-        return pathToAddPaddingFile;
+        return fileWithPadding;
     }
 
     public String removePadding(String pathToFile) throws IOException {
