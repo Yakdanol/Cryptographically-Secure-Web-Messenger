@@ -2,6 +2,7 @@ package org.example.CipherAlgorithms;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.CipherAlgorithms.Implementation.algorithms.CipherAlgorithms;
+import org.example.CipherAlgorithms.Tools.cipher_file.FileThreadCipher;
 import org.example.CipherAlgorithms.Implementation.encryption_mode.EncryptionMode;
 import org.example.CipherAlgorithms.Implementation.encryption_mode.impl.CBC.CBC;
 import org.example.CipherAlgorithms.Implementation.encryption_mode.impl.CFB.CFB;
@@ -15,9 +16,10 @@ import org.example.CipherAlgorithms.Implementation.padding.impl.ANSI_X923;
 import org.example.CipherAlgorithms.Implementation.padding.impl.Zeros;
 import org.example.CipherAlgorithms.Implementation.padding.impl.ISO_10126;
 import org.example.CipherAlgorithms.Implementation.padding.impl.PKCS7;
+import org.example.CipherAlgorithms.Tools.cipher_file.impl.FileThreadCipherImpl;
+import org.example.CipherAlgorithms.Tools.cipher_file.impl.FileThreadTaskCipherImpl;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.file.Files;
@@ -53,10 +55,10 @@ public class SymmetricEncryption implements AutoCloseable {
     }
 
     private final ExecutorService executorService;
-    private EncryptionMode encryptionMode;
+    private final EncryptionMode encryptionMode;
     private final Padding padding;
     private final CipherAlgorithms cipherAlgorithm;
-    private byte[] initializationVector_IV;
+    private final byte[] initializationVector_IV;
     private static final int BLOCK_SIZE = 1024;
 
     public SymmetricEncryption(EncryptionModes encryptionMode, PaddingMode paddingMode, CipherAlgorithms cipherAlgorithm, byte[] initializationVector_IV) {
@@ -83,168 +85,213 @@ public class SymmetricEncryption implements AutoCloseable {
         this.initializationVector_IV = initializationVector_IV;
     }
 
-    public CompletableFuture<byte[]> encrypt(byte[] textToEncrypt) {
-        return CompletableFuture.supplyAsync(() ->
-                encryptionMode.encrypt(padding.addPadding(textToEncrypt, cipherAlgorithm.getBlockSize())));
-    }
-
-//    public byte[] encrypt(byte[] textToEncrypt) {
-//        try {
-//            return encryptionMode.encrypt(padding.addPadding(textToEncrypt, cipherAlgorithm.getBlockSize()));
-//        } catch (Exception ex) {
-//            log.error(ex.getMessage());
-//            log.error(Arrays.deepToString(ex.getStackTrace()));
-//        }
-//
-//        return new byte[0];
+//    public CompletableFuture<byte[]> encrypt(byte[] textToEncrypt) {
+//        log.info("Starting encryption");
+//        return CompletableFuture.supplyAsync(() ->
+//                encryptionMode.encrypt(padding.addPadding(textToEncrypt, cipherAlgorithm.getBlockSize())));
 //    }
 
-    public CompletableFuture<byte[]> decrypt(byte[] textToDecrypt) {
-        return CompletableFuture.supplyAsync(() ->
-                encryptionMode.decrypt(padding.removePadding(textToDecrypt)));
+    public byte[] encrypt(byte[] textToEncrypt) throws ExecutionException, InterruptedException {
+        log.info("Starting encrypt byte text");
+        try {
+            return encryptionMode.encrypt(padding.addPadding(textToEncrypt, cipherAlgorithm.getBlockSize()));
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            log.error(Arrays.deepToString(ex.getStackTrace()));
+        }
+
+        return new byte[0];
     }
 
-//    public byte[] decrypt(byte[] textToDecrypt) {
-//        try {
-//            return encryptionMode.decrypt(padding.addPadding(textToDecrypt, cipherAlgorithm.getBlockSize()));
-//        } catch (Exception ex) {
-//            log.error(ex.getMessage());
-//            log.error(Arrays.deepToString(ex.getStackTrace()));
-//        }
-//
-//        return new byte[0];
+//    public CompletableFuture<byte[]> decrypt(byte[] textToDecrypt) {
+//        log.info("Starting decryption");
+//        return CompletableFuture.supplyAsync(() ->
+//                padding.removePadding(encryptionMode.decrypt(textToDecrypt)));
 //    }
 
-    // todo надо проверять алгоритм
-    public CompletableFuture<String> encryptFile(String fileForEncryption) throws IOException {
-        return asyncProcess(fileForEncryption, true);
-    }
-
-//    public String encryptFile(String fileForEncryption) throws IOException {
-//        String encryptedFile = null;
-//        int blockSize = cipherAlgorithm.getBlockSize();
-//
-//        try {
-//            String fileWithPadding = padding.addPadding(fileForEncryption, blockSize);
-//            encryptedFile = new FileThreadCipherImpl(
-//                    blockSize,
-//                    new FileThreadTaskCipherImpl(cipherMode)
-//            ).cipher(fileWithPadding, addPostfixToFileName(fileForEncryption, "_enc"), FileThreadCipher.CipherAction.ENCRYPT);
-//
-//            Files.delete(Path.of(fileWithPadding));
+    public byte[] decrypt(byte[] textToDecrypt) throws ExecutionException, InterruptedException {
+        log.info("Starting decrypt byte text");
+        try {
+            return padding.removePadding(encryptionMode.decrypt(textToDecrypt));
+        }
 //        } catch (InterruptedException ex) {
 //            log.error(ex.getMessage());
-//            log.error(Arrays.toString(ex.getStackTrace()));
+//            log.error(Arrays.deepToString(ex.getStackTrace()));
 //            Thread.currentThread().interrupt();
-//        } catch (Exception ex) {
-//            log.error(ex.getMessage());
-//            log.error(Arrays.toString(ex.getStackTrace()));
 //        }
-//
-//        return encryptedFile;
-//    }
+        catch (Exception ex) {
+            log.error(ex.getMessage());
+            log.error(Arrays.deepToString(ex.getStackTrace()));
+        }
 
-    // todo надо проверять алгоритм
-    public CompletableFuture<String> decryptFile(String fileForDecryption) throws IOException {
-        return asyncProcess(fileForDecryption, false);
+        return new byte[0];
     }
 
-//    public String decryptFile(String fileForDecryption) throws IOException {
-//        return "";
+//    public CompletableFuture<String> encryptFile(String fileForEncryption) throws IOException {
+//        log.info("Starting File encryption");
+//        return asyncProcess(fileForEncryption, true);
 //    }
 
-    private CompletableFuture<String> asyncProcess(String inputFile, boolean encryptOrDecrypt) {
-        if (inputFile == null) {
-            throw new RuntimeException("Input file is null");
-        }
+    public String encryptFile(String pathToInputFile) {
+        String encryptFile = null;
+        int sizeBlockBytes = cipherAlgorithm.getBlockSize();
 
         try {
-            File file = new File(inputFile);
-            if (!file.exists()) {
-                throw new FileNotFoundException(inputFile);
-            }
-            long fileLength = file.length();
+            String fileWithPadding = padding.addPadding(pathToInputFile, sizeBlockBytes);
+            encryptFile = new FileThreadCipherImpl(
+                    sizeBlockBytes,
+                    new FileThreadTaskCipherImpl(encryptionMode)
+            ).cipher(fileWithPadding, addPostfixToFileName(pathToInputFile, "_enc"), true);
 
-            String outputFile;
-            if (encryptOrDecrypt) {
-                outputFile = padding.addPadding(inputFile, cipherAlgorithm.getBlockSize());
-            } else {
-                outputFile = padding.removePadding(inputFile);
-            }
-
-            return CompletableFuture
-                    .supplyAsync(() -> processFile(inputFile, outputFile, fileLength, encryptOrDecrypt));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            Files.delete(Path.of(fileWithPadding));
+        } catch (InterruptedException ex) {
+            log.error(ex.getMessage());
+            log.error(Arrays.toString(ex.getStackTrace()));
+            Thread.currentThread().interrupt();
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            log.error(Arrays.toString(ex.getStackTrace()));
         }
+
+        return encryptFile;
     }
 
-    private String processFile(String inputFile, String outputFile, long fileLength, boolean encryptOrDecrypt) {
-        log.info("Start processing file");
+//    public CompletableFuture<String> decryptFile(String fileForDecryption) throws IOException {
+//        log.info("Starting File decryption");
+//        return asyncProcess(fileForDecryption, false);
+//    }
 
-        if (inputFile == null || outputFile == null) {
-            throw new RuntimeException("Input and output files cannot be null");
-        }
+    public String decryptFile(String pathToInputFile) {
+        String decryptFile = null;
+        int sizeBlockBytes = cipherAlgorithm.getBlockSize();
 
-        List<Future<?>> futures = new ArrayList<>();
-        for (var readBytes = 0L; readBytes < fileLength; readBytes += BLOCK_SIZE) {
-            final long finalReadBytes = readBytes;
+        try {
+            decryptFile = new FileThreadCipherImpl(
+                    sizeBlockBytes,
+                    new FileThreadTaskCipherImpl(encryptionMode)
+            ).cipher(pathToInputFile, addPostfixToFileName(pathToInputFile, "_dec"), false);
+            String removePaddingFile = padding.removePadding(decryptFile);
 
-            futures.add(executorService.submit(() -> {
-                byte[] block = readBlock(inputFile, finalReadBytes, fileLength);
-
-                if (encryptOrDecrypt) {
-                    block = encryptionMode.encrypt(block);
-                } else {
-                    block = encryptionMode.decrypt(block);
-                }
-
-                writeFile(outputFile, block, finalReadBytes);
-            }));
-        }
-
-        for (var future : futures) {
-            try {
-                future.get();
-            } catch (InterruptedException | ExecutionException ex) {
-                throw new RuntimeException(ex);
+            if (!(new File(removePaddingFile).renameTo(new File(decryptFile)))) {
+                log.error("Error while renaming file");
             }
+        } catch (InterruptedException ex) {
+            log.error(ex.getMessage());
+            log.error(Arrays.toString(ex.getStackTrace()));
+            Thread.currentThread().interrupt();
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            log.error(Arrays.toString(ex.getStackTrace()));
         }
 
-        log.info("Finished processing file");
-        return outputFile;
+        return decryptFile;
     }
 
-    private byte[] readBlock(String inputFile, long offset, long fileLength) {
-        try (RandomAccessFile file = new RandomAccessFile(inputFile, "r")) {
-            file.seek(offset);
-            int bytesRead = 0;
-
-            long unreadBytes = fileLength - offset;
-            int arrayLength = (int) (unreadBytes < BLOCK_SIZE ? unreadBytes : BLOCK_SIZE);
-
-            byte[] bytes = new byte[arrayLength];
-
-            while (bytesRead < BLOCK_SIZE && file.getFilePointer() < fileLength) {
-                bytes[bytesRead++] = file.readByte();
-            }
-
-            return bytes;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    private String addPostfixToFileName(String pathToInputFile, String postfix) {
+        log.info("Starting add Postfix to file");
+        int dotIndex = pathToInputFile.lastIndexOf('.');
+        String baseName = pathToInputFile.substring(0, dotIndex);
+        String extension = pathToInputFile.substring(dotIndex);
+        return baseName + postfix + extension;
     }
 
-    private void writeFile(String outputFile, byte[] bytes, long offset) {
-        try (RandomAccessFile output = new RandomAccessFile(outputFile, "rw")) {
-            output.seek(offset);
-            for (var value : bytes) {
-                output.write(value);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    private CompletableFuture<String> asyncProcess(String inputFile, boolean encryptOrDecrypt) {
+//        if (inputFile == null) {
+//            throw new RuntimeException("Input file is null");
+//        }
+//
+//        try {
+//            File file = new File(inputFile);
+//            if (!file.exists()) {
+//                throw new FileNotFoundException(inputFile);
+//            }
+//            long fileLength = file.length();
+//
+//            String outputFile;
+//            if (encryptOrDecrypt) {
+//                outputFile = padding.addPadding(inputFile, cipherAlgorithm.getBlockSize());
+//            } else {
+//                outputFile = padding.removePadding(inputFile);
+//            }
+//
+//            return CompletableFuture
+//                    .supplyAsync(() -> processFile(inputFile, outputFile, fileLength, encryptOrDecrypt));
+//        } catch (IOException ex) {
+//            throw new RuntimeException(ex);
+//        }
+//    }
+//
+//    private String processFile(String inputFile, String outputFile, long fileLength, boolean encryptOrDecrypt) {
+//        log.info("Start processing file");
+//
+//        if (inputFile == null || outputFile == null) {
+//            throw new RuntimeException("Input and output files cannot be null");
+//        }
+//
+//        List<Future<?>> futures = new ArrayList<>();
+//        for (var readBytes = 0L; readBytes < fileLength; readBytes += BLOCK_SIZE) {
+//            final long finalReadBytes = readBytes;
+//
+//            futures.add(executorService.submit(() -> {
+//                byte[] block = readBlock(inputFile, finalReadBytes, fileLength);
+//
+//                if (encryptOrDecrypt) {
+//                    block = encryptionMode.encrypt(block);
+//                } else {
+//                    block = encryptionMode.decrypt(block);
+//                }
+//
+//                writeFile(outputFile, block, finalReadBytes);
+//            }));
+//        }
+//
+//        for (var future : futures) {
+//            try {
+//                future.get();
+//            } catch (InterruptedException | ExecutionException ex) {
+//                log.error("Error in processing block: " + ex.getMessage());
+//                throw new RuntimeException(ex);
+//            }
+//        }
+//
+//        log.info("Finished processing file");
+//        return outputFile;
+//    }
+//
+//    private byte[] readBlock(String inputFile, long offset, long fileLength) {
+//        log.info("Start reading block: " + offset);
+//        try (RandomAccessFile file = new RandomAccessFile(inputFile, "r")) {
+//            file.seek(offset);
+//            int bytesRead = 0;
+//
+//            long unreadBytes = fileLength - offset;
+//            int arrayLength = (int) (unreadBytes < BLOCK_SIZE ? unreadBytes : BLOCK_SIZE);
+//
+//            byte[] bytes = new byte[arrayLength];
+//
+//            while (bytesRead < BLOCK_SIZE && file.getFilePointer() < fileLength) {
+//                bytes[bytesRead++] = file.readByte();
+//            }
+//
+//            return bytes;
+//        } catch (IOException ex) {
+//            log.error("Error reading block at offset " + offset + ": " + ex.getMessage());
+//            throw new RuntimeException(ex);
+//        }
+//    }
+//
+//    private void writeFile(String outputFile, byte[] bytes, long offset) {
+//        log.info("Start writing file: " + offset);
+//        try (RandomAccessFile output = new RandomAccessFile(outputFile, "rw")) {
+//            output.seek(offset);
+//            for (var value : bytes) {
+//                output.write(value);
+//            }
+//        } catch (IOException ex) {
+//            log.error("Error writing block at offset " + offset + ": " + ex.getMessage());
+//            throw new RuntimeException(ex);
+//        }
+//    }
 
     @Override
     public void close() {
@@ -253,9 +300,8 @@ public class SymmetricEncryption implements AutoCloseable {
             if (!executorService.awaitTermination(2, TimeUnit.SECONDS)) {
                 executorService.shutdownNow();
             }
-        } catch (InterruptedException e) {
+        } catch (InterruptedException ex) {
             executorService.shutdownNow();
         }
     }
 }
-

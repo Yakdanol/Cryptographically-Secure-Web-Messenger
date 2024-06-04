@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.IntBuffer;
+import java.util.Arrays;
 
 @Slf4j
 public class BinaryOperations {
@@ -114,6 +116,45 @@ public class BinaryOperations {
         return result;
     }
 
+//    public static byte[] intToByteArray(int[] array) {
+//        ByteBuffer byteBuffer = ByteBuffer.allocate(array.length * Integer.BYTES);
+//        byteBuffer.asIntBuffer().put(array);
+//
+//        return byteBuffer.array();
+//    }
+
+    public static int[] byteToIntArray(byte[] inputArray) {
+        // Длина массива в 4 раза меньше, если без Паддинга
+        int[] resultArray = new int[inputArray.length / 4];
+
+        // Создаем ByteBuffer из байтового массива
+        ByteBuffer byteBuffer = ByteBuffer.wrap(inputArray);
+        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+
+        // Создаем IntBuffer, который отображает данные из ByteBuffer
+        IntBuffer intBuffer = byteBuffer.asIntBuffer();
+
+        // Копируем данные из IntBuffer в массив int
+        intBuffer.get(resultArray);
+
+
+//        // todo если с Паддингом
+//        // Убедимся, что длина inputArray кратна 4, добавляя нулевые байты, если это не так
+//        int paddedLength = (inputArray.length + 3) & ~3; // Округление до ближайшего большего кратного 4
+//        byte[] paddedArray = new byte[paddedLength];
+//        System.arraycopy(inputArray, 0, paddedArray, 0, inputArray.length);
+//
+//        // Создаем ByteBuffer из байтового массива
+//        ByteBuffer byteBuffer = ByteBuffer.wrap(paddedArray);
+//        byteBuffer.order(ByteOrder.LITTLE_ENDIAN); // Устанавливаем порядок байтов (если требуется)
+//
+//        // Создаем массив int
+//        int[] resultArray = new int[paddedLength / 4];
+//        // Копируем данные из ByteBuffer в массив int
+//        byteBuffer.asIntBuffer().get(resultArray);
+
+        return resultArray;
+    }
 
     public static byte[] getLeftNbits(byte[] input, int n) {
         int len = n / 8 + (n % 8 == 0 ? 0 : 1);
@@ -211,12 +252,18 @@ public class BinaryOperations {
         return sumModule(first, ~second + 1, numBits);
     }
 
-//    public static void main(String[] args) {
-//        long a = 123456789123L;
-//        long b = 987654321987L;
-//        int module = 32;
-//
-////        System.out.println("My = " + sumModule(a, b, module));
-//    }
+    public static void main(String[] args) {
+        byte[] inputArray = { (byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 5, (byte) 6, (byte) 7, (byte) 8 };
+        for (byte b : inputArray) {
+            System.out.println(byteToString(b));
+        }
+
+        System.out.println();
+
+        int[] result = byteToIntArray(inputArray);
+        for (int j : result) {
+            System.out.println(Integer.toBinaryString(j & 0xFFFFFFFF));
+        }
+    }
 
 }

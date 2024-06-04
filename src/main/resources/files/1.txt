@@ -1,0 +1,60 @@
+public LoginPageClient() {
+            VerticalLayout mainLayout = new VerticalLayout();
+            mainLayout.setSizeFull();
+            mainLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
+            mainLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+
+            H1 h1 = new H1("Creating User");
+            h1.getStyle().set("text-align", "center");
+            mainLayout.add(h1);
+
+            HorizontalLayout contentLayout = new HorizontalLayout();
+            contentLayout.setWidth("80%"); // уменьшил ширину для приближения к центру
+            contentLayout.setHeight("100%");
+            contentLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+            contentLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+            contentLayout.getStyle().set("gap", "20px"); // добавил промежуток между колонками
+
+            VerticalLayout formLayout = new VerticalLayout();
+            formLayout.setWidth("45%"); // уменьшил ширину
+            formLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+            FormLayout loginForm = new FormLayout();
+            TextField usernameField = new TextField("Username");
+            PasswordField passwordField = new PasswordField("Password");
+            Button loginButton = new Button("Log in");
+//            LoginForm loginForm = new LoginForm();
+//            loginForm.setForgotPasswordButtonVisible(false);
+
+            // Валидация полей Username и Password
+            Binder<Void> binder = new Binder<>();
+            binder.forField(usernameField)
+                    .asRequired("Username is required")
+                    .withValidator(this::validateAlphanumeric)
+                    .bind(ignored -> "", (ignored, value) -> {});
+            binder.forField(passwordField)
+                    .asRequired("Password is required")
+                    .withValidator(this::validateAlphanumeric)
+                    .bind(ignored -> "", (ignored, value) -> {});
+            loginButton.addClickListener(event -> {
+                if (binder.validate().isOk()) {
+                    Notification.show("Login successful!");
+                }
+            });
+
+            formLayout.add(loginForm);
+
+            VerticalLayout detailsLayout = new VerticalLayout();
+            detailsLayout.setWidth("45%"); // уменьшил ширину
+            detailsLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+            Details details = new Details();
+            ComboBox<SampleItem> comboBoxCipherAlgorithm = new ComboBox<>();
+            ComboBox<SampleItem> comboBoxEncryptionMode = new ComboBox<>();
+            ComboBox<SampleItem> comboBoxPadding = new ComboBox<>();
+            setDetailsSampleData(details, comboBoxCipherAlgorithm, comboBoxEncryptionMode, comboBoxPadding);
+            detailsLayout.add(details);
+
+            contentLayout.add(formLayout, detailsLayout);
+
+            mainLayout.add(contentLayout);
+            getContent().add(mainLayout);
+        }
