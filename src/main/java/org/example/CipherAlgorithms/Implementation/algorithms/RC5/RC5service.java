@@ -36,6 +36,7 @@ public class RC5service {
                         BinaryOperations.sumModule(S_extendedKeyTable[i], G, w),
                     H, w),
             w,3);
+
             H = L_splitKey[j] = BinaryOperations.leftCycleShift(
                     BinaryOperations.sumModule(
                             BinaryOperations.sumModule(L_splitKey[j], G, w),
@@ -101,3 +102,4 @@ public class RC5service {
         return result;
     }
 }
+

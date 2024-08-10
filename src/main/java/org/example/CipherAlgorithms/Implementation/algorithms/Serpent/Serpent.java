@@ -51,8 +51,8 @@ public class Serpent implements CipherAlgorithms {
                 }
             }
         }
-        encryptBlock = Permutations.permutate(encryptBlock, FP, Permutations.RuleIndex.LeftZero);
 
+        encryptBlock = Permutations.permutate(encryptBlock, FP, Permutations.RuleIndex.LeftZero);
         return encryptBlock;
     }
 

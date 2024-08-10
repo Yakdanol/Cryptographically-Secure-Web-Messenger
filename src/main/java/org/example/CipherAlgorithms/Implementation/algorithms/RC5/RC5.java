@@ -67,4 +67,3 @@ public class RC5 implements CipherAlgorithms {
         return service.TwoLongPartToByteArray(A, B, inputBlock.length);
     }
 }
-
