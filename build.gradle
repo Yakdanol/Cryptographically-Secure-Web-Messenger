@@ -5,8 +5,6 @@ plugins {
     id 'com.vaadin' version '24.3.10'
 }
 
-//apply plugin: 'io.spring.dependency-management'
-
 group = 'org.example'
 version = '1.0-SNAPSHOT'
 
@@ -29,78 +27,72 @@ ext {
 }
 
 dependencies {
-    //spring boot
+    // Spring boot
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    //spring boot thymeleaf template
-//    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    // Spring boot thymeleaf template
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
-    //open api, swagger
-//    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.0.2'
-//    implementation 'io.swagger:swagger-models:1.6.10'
+    // Open api, Swagger
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.0.2'
+    implementation 'io.swagger:swagger-models:1.6.10'
 
-    //spring validation
-//    implementation 'org.springframework.boot:spring-boot-starter-validation:3.0.5'
+    // Spring validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation:3.0.5'
 
-    //spring jpa
+    // Spring jpa
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-    //spring actuator
-//    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-//    implementation 'de.codecentric:spring-boot-admin-starter-client:3.0.3'
+    // Actuator
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'de.codecentric:spring-boot-admin-starter-client:3.0.3'
 
-
-    // vaadin
+    // Vaadin
     implementation 'com.vaadin:vaadin-spring-boot-starter'
-//    implementation 'com.vaadin:vaadin-core:23.1.0'
-//    implementation 'com.vaadin:collaboration-engine:6.2.1'
+    implementation 'com.vaadin:vaadin-core:23.1.0'
+    implementation 'com.vaadin:collaboration-engine:6.2.1'
     implementation 'javax.servlet:javax.servlet-api:4.0.1'
 
-    // redis
+    // Redis
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: '3.2.5'
 
     // kafka
     implementation 'org.apache.kafka:kafka-clients:3.4.0'
 
-    // logging
-//    implementation 'ch.qos.logback:logback-classic:1.4.5'
-
-    // code generator
+    // Lombok
     compileOnly 'org.projectlombok:lombok:1.18.26'
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
 
-    // apache-commons
+    // Apache-commons
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
     implementation 'commons-io:commons-io:2.16.1'
 
-    // configuration
+    // Configuration
     implementation 'com.typesafe:config:1.4.2'
 
-    // databases
+    // Databases
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.3'
-//    implementation 'com.zaxxer:HikariCP:5.0.1'
-//    implementation 'org.jooq:jooq:3.17.8'
+    implementation 'com.zaxxer:HikariCP:5.0.1'
+    implementation 'org.jooq:jooq:3.17.8'
 
-    // json
+    // Json
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.1'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.16.1'
 
-    // javatuples (Pair)
+    // Javatuples (Pair)
     implementation 'org.javatuples:javatuples:1.2'
 
-    // test
+    // Test
     testImplementation 'org.testcontainers:testcontainers:1.17.6'
     testImplementation "org.testcontainers:junit-jupiter:1.17.6"
     testImplementation "org.testcontainers:kafka:1.17.6"
-//    testImplementation "org.testcontainers:postgresql:1.17.6"
-//    testImplementation "org.testcontainers:mongodb:1.18.0"
+    testImplementation "org.testcontainers:postgresql:1.17.6"
+    testImplementation "org.testcontainers:mongodb:1.18.0"
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testCompileOnly "org.projectlombok:lombok:1.18.26"
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
-//    testImplementation 'org.mongodb:mongodb-driver-sync:4.9.1'
-
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
